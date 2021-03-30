@@ -7,4 +7,8 @@ server.use(express.json())
 server.use(helmet())
 server.use(cors())
 
+server.get('/test', (req, res) => {
+    res.json({ message: 'Working!!..' });
+});
+
 module.exports = server
