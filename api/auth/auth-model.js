@@ -1,7 +1,11 @@
 const db = require('./../data/db-config');
 
-function findAll() {
-    return db('users');
+function findByUsername(username) {
+    return db('users').where('username', username).first();
+};
+
+function findByEmail(email) {
+    return db('users').where('email', email).first();
 };
 
 async function findById(id) {
@@ -22,7 +26,8 @@ async function add(user) {
 };
 
 module.exports = {
-    findAll,
+    findByUsername,
+    findByEmail,
     findById,
     add
 };

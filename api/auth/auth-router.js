@@ -1,15 +1,16 @@
 const router = require('express').Router();
 const Auth = require('./auth-model');
 const bcrypt = require('bcryptjs');
+const { checkRegisterCredentials } = require('./auth-middleware');
 
 // just for testing right now - probably won't actually be used
 router.get('/', (req, res) => {
-    Auth.findAll()
-    .then(users => {
-        res.status(200).json(users);
+    Auth.findByEmail(req.body.email)
+    .then(user => {
+        res.status(200).json(user);
     })
     .catch(err => {
-        res.status(500).json({ message: 'something went wrong fetching all users', error: err.message });
+        res.status(500).json({ message: 'something went wrong fetching user by filter', error: err.message });
     })
 });
 
@@ -24,8 +25,13 @@ router.get('/:id', (req, res) => {
     })
 });
 
-router.post('/', (req, res) => {
-    Auth.add(req.body)
+router.post('/', checkRegisterCredentials, (req, res) => {
+    const { username, password, role, email } = req.body;
+    const rounds = process.env.BCRYPT_ROUNDS || 8;
+    const hash = bcrypt.hashSync(password, rounds);
+    const userToAdd = { username, password: hash, role, email };
+
+    Auth.add(userToAdd)
     .then(newUser => {
         res.status(200).json(newUser);
     })
