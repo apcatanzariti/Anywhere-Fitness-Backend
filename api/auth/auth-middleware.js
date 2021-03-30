@@ -19,6 +19,26 @@ async function checkRegisterCredentials(req, res, next) {
     }
 };
 
+async function checkLoginCredentials(req, res, next) {
+    const username = req.body.username.trim();
+    const password = req.body.password;
+
+    const user = await Auth.findByUsername(username);
+
+    if (!username || !password) {
+        res.status(401).json({ message: 'Username and Password required.' });
+    } else if (!user || bcrypt.compareSync(password, user.password) === false) {
+        res.status(401).json({ message: 'Invalid credentials, please try again.' });
+    } else if (user && bcrypt.compareSync(password, user.password)) {
+        const token = buildToken(user);
+        req.username = user.username;
+        req.token = token;
+        next();
+    } else {
+        res.status(500).json({ message: 'Something went wrong while logging in, please try again..' });
+    }
+};
+
 function buildToken(user) {
     const payload = {
         subject: user.user_id,
@@ -33,5 +53,6 @@ function buildToken(user) {
 };
 
 module.exports = {
-    checkRegisterCredentials
+    checkRegisterCredentials,
+    checkLoginCredentials
 };
