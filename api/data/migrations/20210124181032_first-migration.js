@@ -48,7 +48,9 @@ exports.up = async (knex) => {
         .notNullable()
         .unsigned()
         .references('class_type_id')
-        .inTable('class_types');
+        .inTable('class_types')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.string('class_start', 128)
         .notNullable();
       table.decimal('class_duration')
@@ -58,7 +60,9 @@ exports.up = async (knex) => {
         .notNullable()
         .unsigned()
         .references('intensity_id')
-        .inTable('class_intensity');
+        .inTable('class_intensity')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.string('class_location', 320)
         .notNullable()
       table.integer('class_client_number')
@@ -73,7 +77,9 @@ exports.up = async (knex) => {
         .notNullable()
         .unsigned()
         .references('user_id')
-        .inTable('users');
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
     })
 
     .createTable('clients_classes', table => {
@@ -82,12 +88,16 @@ exports.up = async (knex) => {
         .notNullable()
         .unsigned()
         .references('class_id')
-        .inTable('classes');
+        .inTable('classes')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.integer('client')
         .notNullable()
         .unsigned()
         .references('user_id')
-        .inTable('users');
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
     })
 }
 
