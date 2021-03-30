@@ -1,5 +1,12 @@
 exports.up = async (knex) => {
   await knex.schema
+
+    .createTable('roles', table => {
+      table.increments('role_id');
+      table.string('role_type', 128)
+        .notNullable()
+        .unique();
+    })
     
     .createTable('users', table => {
       table.increments('user_id');
@@ -17,13 +24,6 @@ exports.up = async (knex) => {
         .notNullable()
         .unique();
       table.timestamps(false, true);
-    })
-
-    .createTable('roles', table => {
-      table.increments('role_id');
-      table.string('role_type', 128)
-        .notNullable()
-        .unique();
     })
 
     .createTable('class_types', table => {
@@ -97,6 +97,6 @@ exports.down = async (knex) => {
     .dropTableIfExists('classes')
     .dropTableIfExists('class_intensity')
     .dropTableIfExists('class_types')
-    .dropTableIfExists('roles')
-    .dropTableIfExists('users');
+    .dropTableIfExists('users')
+    .dropTableIfExists('roles');
 };
