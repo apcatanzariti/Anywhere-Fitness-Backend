@@ -1,12 +1,6 @@
 exports.up = async (knex) => {
   await knex.schema
-    .createTable('users', (users) => {
-      users.increments('user_id')
-      users.string('user_username', 200).notNullable()
-      users.string('user_password', 200).notNullable()
-      users.string('user_email', 320).notNullable()
-      users.timestamps(false, true)
-
+    
     .createTable('users', table => {
       table.increments('user_id');
       table.string('username', 200)
@@ -38,11 +32,71 @@ exports.up = async (knex) => {
         .notNullable()
         .unique();
     })
+
+    .createTable('class_intensity', table => {
+      table.increments('intensity_id');
+      table.string('intensity_level', 128)
+        .notNullable()
+        .unique();
+    })
+
+    .createTable('classes', table => {
+      table.increments('class_id');
+      table.string('class_name', 320)
+        .notNullable();
+      table.integer('class_category')
+        .notNullable()
+        .unsigned()
+        .references('class_type_id')
+        .inTable('class_types');
+      table.string('class_start', 128)
+        .notNullable();
+      table.decimal('class_duration')
+        .notNullable()
+        .unsigned();
+      table.integer('class_intensity')
+        .notNullable()
+        .unsigned()
+        .references('intensity_id')
+        .inTable('class_intensity');
+      table.string('class_location', 320)
+        .notNullable()
+      table.integer('class_client_number')
+        .notNullable()
+        .default(0)
+        .unsigned();
+      table.integer('class_max_size')
+        .notNullable()
+        .default(0)
+        .unsigned();
+      table.integer('class_instructor')
+        .notNullable()
+        .unsigned()
+        .references('user_id')
+        .inTable('users');
+    })
+
+    .createTable('clients_classes', table => {
+      table.increments('client_class_id');
+      table.integer('class')
+        .notNullable()
+        .unsigned()
+        .references('class_id')
+        .inTable('classes');
+      table.integer('client')
+        .notNullable()
+        .unsigned()
+        .references('user_id')
+        .inTable('users');
+    })
 }
 
 exports.down = async (knex) => {
-  await knex.schema.dropTableIfExists('users')
   await knex.schema
-  .dropTableIfExists('roles')
-  .dropTableIfExists('users');
-}
+    .dropTableIfExists('clients_classes')
+    .dropTableIfExists('classes')
+    .dropTableIfExists('class_intensity')
+    .dropTableIfExists('class_types')
+    .dropTableIfExists('roles')
+    .dropTableIfExists('users');
+};
