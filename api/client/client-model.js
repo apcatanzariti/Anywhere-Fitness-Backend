@@ -34,6 +34,7 @@ async function joinClass(classId, clientId, clientUsername) {
 async function removeFromClass(classId, clientId) {
     const classInfo = await findById(classId);
     await db('clients_classes').where('class', classId).where('client', clientId).del();
+    // update attendees here!!
 
     return {
         class_name: classInfo.class_name

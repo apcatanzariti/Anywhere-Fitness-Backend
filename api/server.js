@@ -20,3 +20,7 @@ server.get('/test', (req, res) => {
 });
 
 module.exports = server
+
+// TO DO:
+//   when client leaves class, needs to update the number of attendees
+//   need middleware for updating information to make sure fields aren't left blank
