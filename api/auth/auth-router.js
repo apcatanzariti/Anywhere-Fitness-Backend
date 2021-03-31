@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const Auth = require('./auth-model');
 const bcrypt = require('bcryptjs');
-const { checkRegisterCredentials } = require('./auth-middleware');
+const { checkRegisterCredentials, checkLoginCredentials } = require('./auth-middleware');
+const restricted = require('./../middleware/restricted');
 
 // just for testing right now - probably won't actually be used
 router.get('/', (req, res) => {
-    Auth.findByEmail(req.body.email)
+    Auth.findByUsername(req.body.username)
     .then(user => {
         res.status(200).json(user);
     })
@@ -15,7 +16,7 @@ router.get('/', (req, res) => {
 });
 
 // just for testing right now - probably won't actually be used
-router.get('/:id', (req, res) => {
+router.get('/:id', restricted, (req, res) => {
     Auth.findById(req.params.id)
     .then(user => {
         res.status(200).json(user);
@@ -25,7 +26,7 @@ router.get('/:id', (req, res) => {
     })
 });
 
-router.post('/', checkRegisterCredentials, (req, res) => {
+router.post('/register', checkRegisterCredentials, (req, res) => {
     const { username, password, role, email } = req.body;
     const rounds = process.env.BCRYPT_ROUNDS || 8;
     const hash = bcrypt.hashSync(password, rounds);
@@ -38,6 +39,13 @@ router.post('/', checkRegisterCredentials, (req, res) => {
     .catch(err => {
         res.status(500).json({ message: 'something went wrong adding this user', error: err.message });
     })
+});
+
+router.post('/login', checkLoginCredentials, (req, res) => {
+    const user = req.username;
+    const token = req.token;
+
+    res.json({ message: `Welcome, ${user}!`, token: token });
 });
 
 module.exports = router;
