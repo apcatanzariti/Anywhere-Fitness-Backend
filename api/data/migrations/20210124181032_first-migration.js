@@ -28,7 +28,7 @@ exports.up = async (knex) => {
 
     .createTable('class_types', table => {
       table.increments('class_type_id');
-      table.string('class_name', 128)
+      table.string('type_name', 128)
         .notNullable()
         .unique();
     })
