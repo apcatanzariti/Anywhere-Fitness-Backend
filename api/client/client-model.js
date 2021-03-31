@@ -25,6 +25,7 @@ async function joinClass(classId, clientId, clientUsername) {
     const joinedClass = await findById(classId);
     const updateAttendees = joinedClass.attendees + 1;
     await db('classes').where('class_id', classId).update('class_client_number', updateAttendees);
+    
     return {
         username: clientUsername,
         class: joinedClass.class_name
@@ -34,6 +35,9 @@ async function joinClass(classId, clientId, clientUsername) {
 async function removeFromClass(classId, clientId) {
     const classInfo = await findById(classId);
     await db('clients_classes').where('class', classId).where('client', clientId).del();
+    // update attendees here!!
+    const updateAttendees = classInfo.attendees - 1;
+    await db('classes').where('class_id', classId).update('class_client_number', updateAttendees);
 
     return {
         class_name: classInfo.class_name
