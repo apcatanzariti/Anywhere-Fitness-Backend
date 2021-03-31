@@ -43,31 +43,11 @@ function remove(id) {
 
 // findByInstructor
 
-// client can reserve spot in a class - space available will be checked using middleware
-async function joinClass(classId, clientId, clientUsername) {
-    await db('clients_classes').insert({ class: classId, client: clientId }, 'client_class_id');
-    const joinedClass = await findById(classId);
-    const updateAttendees = joinedClass.attendees + 1;
-    await db('classes').where('class_id', classId).update('class_client_number', updateAttendees);
-    return {
-        username: clientUsername,
-        class: joinedClass.class_name
-    };
-};
-
-// *client can reserve spot*
-// does check to see if any spots available - will do through middleware
-// adds the client to clients_classes
-// grabs every entry with matching client_class_id and adds it up (create array and do .length?)
-// compare that number to max class size and set the available spots to that number (max class size - array.length from above)
-// req.body.decodedJwt.subject contains the users id
-
 module.exports = {
     findById,
     addClass,
     update,
-    remove,
-    joinClass
+    remove
 };
 
 // to do:
