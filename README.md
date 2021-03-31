@@ -21,16 +21,18 @@
     "class_duration": 1, (integer, as in 1 hour)
     "class_intensity": 5,
     "class_location": "123 Main St. Los Angeles CA, 90018",
-    "class_client_number": 0, (how many people currently in the class)
+    "class_client_number": 0, (how many people currently in the class - IS NOT REQUIRED AND WILL DEFAULT TO 0 IF NOT FILLED IN)
     "class_max_size": 15,
     "class_instructor": 1 (the id of the instructor)
   }
-  - returns all the details of the new class to be used by the front end
+  - utilizes middleware to make sure all fields are filled out correctly.
+  - returns all the details of the new class to be used by the front end.
 
   - [PUT]
   - /api/class/:id
   - this is to update/change the information of a class. the :id is of the class.
-  - returns all of the new details of the class to be used by the front end
+  - utilizes middleware to make sure no field is left blank and then submitted.
+  - returns all of the new details of the class to be used by the front end.
   
   - [DELETE]
   - /api/class/:id

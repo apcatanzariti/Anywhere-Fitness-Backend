@@ -2,10 +2,25 @@ const router = require('express').Router();
 const Class = require('./class-model');
 const bcrypt = require('bcryptjs');
 const restricted = require('./../middleware/restricted');
+const { checkAddFields, checkUpdateFields } = require('./class-middleware');
 
 // create a new class - this is for instructors - returns all the details of the new class to be used by the front end
-router.post('/', restricted, (req, res) => {
-    Class.addClass(req.body)
+router.post('/', restricted, checkAddFields, (req, res) => {
+    const { class_name, class_type, class_start, class_duration, class_intensity, class_location, class_client_number, class_max_size, class_instructor } = req.body;
+
+    const newClass = {
+        class_name, 
+        class_type, 
+        class_start, 
+        class_duration, 
+        class_intensity, 
+        class_location, 
+        class_client_number, 
+        class_max_size, 
+        class_instructor
+    }
+
+    Class.addClass(newClass)
     .then(newClass => {
         res.status(200).json(newClass);
     })
@@ -15,9 +30,21 @@ router.post('/', restricted, (req, res) => {
 });
 
 // update a class - this is for instructors - returns all the details of the updated class to be used by the front end
-router.put('/:id', restricted, (req, res) => {
+router.put('/:id', restricted, checkUpdateFields, (req, res) => {
     const id = req.params.id;
-    const changes = req.body;
+
+    const { class_name, class_type, class_start, class_duration, class_intensity, class_location, class_client_number, class_max_size } = req.body;
+
+    const changes = {
+        class_name, 
+        class_type, 
+        class_start, 
+        class_duration, 
+        class_intensity, 
+        class_location, 
+        class_client_number, 
+        class_max_size
+    }
 
     Class.update(id, changes)
     .then(updatedItem => {
