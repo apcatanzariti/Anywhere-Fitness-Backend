@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Class = require('./class-model');
 const bcrypt = require('bcryptjs');
 const restricted = require('./../middleware/restricted');
-const { checkBeforeAddingToClass } = require('./class-middleware');
+const { checkClassExists, checkAlreadyEnrolled } = require('./class-middleware');
 
 // get a list of classes based upon instructor id
 
@@ -43,7 +43,7 @@ router.delete('/:id', (req, res) => {
 });
 
 // client can reserve spot in class
-router.post('/:id', restricted, checkBeforeAddingToClass, (req, res) => {
+router.post('/:id', restricted, checkClassExists, checkAlreadyEnrolled, (req, res) => {
     Class.joinClass(req.params.id, req.body.decodedJwt.subject, req.body.decodedJwt.username)
     .then(joined => {
         res.status(200).json(joined);
