@@ -5,7 +5,7 @@ const { checkRegisterCredentials, checkLoginCredentials } = require('./auth-midd
 const restricted = require('./../middleware/restricted');
 
 // just for testing right now - probably won't actually be used
-router.get('/', restricted, (req, res) => {
+router.get('/', (req, res) => {
     Auth.findByUsername(req.body.username)
     .then(user => {
         res.status(200).json(user);
@@ -16,7 +16,7 @@ router.get('/', restricted, (req, res) => {
 });
 
 // just for testing right now - probably won't actually be used
-router.get('/:id', (req, res) => {
+router.get('/:id', restricted, (req, res) => {
     Auth.findById(req.params.id)
     .then(user => {
         res.status(200).json(user);

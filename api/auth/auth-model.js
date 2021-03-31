@@ -9,12 +9,12 @@ function findByEmail(email) {
 };
 
 async function findById(id) {
-    const user = await db('users').where('user_id', id).first().join('roles', 'users.role', 'roles.role_id');
+    const user = await db('users').where('user_id', id).first();
 
     return {
         user_id: user.user_id,
         username: user.username,
-        role: user.role_type,
+        role: user.role,
         email: user.email
     };
 };
